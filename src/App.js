@@ -5,9 +5,13 @@ import Settings from "./components/Settings";
 import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import "./App.css";
-
-// import { connect } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { connect } from "react-redux";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   main: {
@@ -27,8 +31,12 @@ function App(props) {
       <div className={main}>
         <Paper elevation={5} className={root}>
           <Switch>
-            <Route path="/chat" exact component={Dashboard} />
-            <Route path="/settings" exact component={Settings} />
+            <Route path="/chat" exact>
+              {props.user.name ? <Dashboard /> : <Redirect to="/" />}
+            </Route>
+            <Route path="/settings" exact>
+              {props.user.name ? <Settings /> : <Redirect to="/" />}
+            </Route>
             <Route path="/" exact component={Home} />
           </Switch>
         </Paper>
@@ -36,9 +44,6 @@ function App(props) {
     </Router>
   );
 }
-// const mapStateToProps = ({ appName }) => {
-//   return { appName };
-// };
+const mapStateToProps = ({ user }) => ({ user });
 
-// export default connect(mapStateToProps, undefined)(App);
-export default App;
+export default connect(mapStateToProps, undefined)(App);
